@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Nikos Michalakis <nikos@netflix.com>
  *
  */
+//负载均衡的处理规则，轮询
 public class RoundRobinRule extends AbstractLoadBalancerRule {
 
     private AtomicInteger nextServerCyclicCounter;

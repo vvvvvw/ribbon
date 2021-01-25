@@ -54,6 +54,8 @@ import java.util.concurrent.TimeUnit;
  * @author stonse
  * 
  */
+//LoadBalancerStats对象被用来存储负载均衡器中各个服务实例
+//当前的属性和统计  信息
 public class LoadBalancerStats implements IClientConfigAware {
     
     private static final String PREFIX = "LBStats_";
@@ -309,8 +311,11 @@ public class LoadBalancerStats implements IClientConfigAware {
         if (servers == null || servers.size() == 0) {
             return new ZoneSnapshot();
         }
+        //总的实例数量
         int instanceCount = servers.size();
+        //所有连接数量
         int activeConnectionsCount = 0;
+        //未开启熔断的连接数量
         int activeConnectionsCountOnAvailableServer = 0;
         int circuitBreakerTrippedCount = 0;
         double loadPerServer = 0;
@@ -318,8 +323,10 @@ public class LoadBalancerStats implements IClientConfigAware {
         for (Server server: servers) {
             ServerStats stat = getSingleServerStat(server);   
             if (stat.isCircuitBreakerTripped(currentTime)) {
+                //如果当前已经被熔断
                 circuitBreakerTrippedCount++;
             } else {
+                //
                 activeConnectionsCountOnAvailableServer += stat.getActiveRequestsCount(currentTime);
             }
             activeConnectionsCount += stat.getActiveRequestsCount(currentTime);

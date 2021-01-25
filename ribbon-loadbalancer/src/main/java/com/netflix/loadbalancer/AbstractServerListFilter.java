@@ -25,6 +25,7 @@ package com.netflix.loadbalancer;
  *
  * @param <T>
  */
+//定义了LoadBalanceStatus
 public abstract class AbstractServerListFilter<T extends Server> implements ServerListFilter<T> {
 
     private volatile LoadBalancerStats stats;

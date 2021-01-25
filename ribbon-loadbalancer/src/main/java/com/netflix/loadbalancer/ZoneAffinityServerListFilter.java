@@ -43,6 +43,7 @@ import java.util.List;
  * @author stonse
  *
  */
+//"区域感知"，会根据提供服务的实例所处的区域和消费者自身的所处区域进行比较，过滤掉那些不是同时处于一个区域的实例
 public class ZoneAffinityServerListFilter<T extends Server> extends
         AbstractServerListFilter<T> implements IClientConfigAware {
 
@@ -50,8 +51,9 @@ public class ZoneAffinityServerListFilter<T extends Server> extends
     private static IClientConfigKey<Double> MAX_LOAD_PER_SERVER = new CommonClientConfigKey<Double>("zoneAffinity.maxLoadPerServer", 0.6d) {};
     private static IClientConfigKey<Double> MAX_BLACKOUT_SERVER_PERCENTAGE = new CommonClientConfigKey<Double>("zoneAffinity.maxBlackOutServesrPercentage", 0.8d) {};
     private static IClientConfigKey<Integer> MIN_AVAILABLE_SERVERS = new CommonClientConfigKey<Integer>("zoneAffinity.minAvailableServers", 2) {};
-
+    //如果区域不亲和，则不开启区域感知，否则则有可能区域感知
     private boolean zoneAffinity;
+    ////如果区域排除，则一定开启区域感知，zoneExclusive>zoneAffinity
     private boolean zoneExclusive;
     private Property<Double> activeReqeustsPerServerThreshold;
     private Property<Double> blackOutServerPercentageThreshold;
@@ -90,11 +92,14 @@ public class ZoneAffinityServerListFilter<T extends Server> extends
 
         Monitors.registerObject("NIWSServerListFilter_" + niwsClientConfig.getClientName());
     }
-    
+
+    // //是否开启区域感知
     private boolean shouldEnableZoneAffinity(List<T> filtered) {    
         if (!zoneAffinity && !zoneExclusive) {
             return false;
         }
+
+        //如果区域排除，则开启区域感知
         if (zoneExclusive) {
             return true;
         }
@@ -103,6 +108,11 @@ public class ZoneAffinityServerListFilter<T extends Server> extends
             return zoneAffinity;
         } else {
             logger.debug("Determining if zone affinity should be enabled with given server list: {}", filtered);
+            //获取过滤后同区域实例的基础指标(包括实例数量、断路器断开数、活动请求数量、实例平均负载等等)，
+            //根据一系列的算法求出如下的评价值并与设置的阈值进行比较，若有一个条件符合，则不启用“区域感知”过滤的服务实例清单
+            // blackOutServerPercentage:故障百分比(断路器断开数/实例数量) >=0.8
+            // activeRequestsPerServer:实例平均负载>=0.6
+            //availableServers:可用实例数量(实例数量-断路器断开数) <2
             ZoneSnapshot snapshot = stats.getZoneSnapshot(filtered);
             double loadPerServer = snapshot.getLoadPerServer();
             int instanceCount = snapshot.getInstanceCount();            

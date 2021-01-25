@@ -22,6 +22,7 @@ package com.netflix.loadbalancer;
  * @author stonse
  *
  */
+//检查服务实例是否正常服务
 public interface IPing {
     
     /**

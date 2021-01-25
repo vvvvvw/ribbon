@@ -6,6 +6,7 @@ package com.netflix.loadbalancer;
  *
  * @author David Liu
  */
+//
 public interface ServerListUpdater {
 
     /**
@@ -22,30 +23,36 @@ public interface ServerListUpdater {
      *
      * @param updateAction
      */
+    //启动服务更新器，传入的UpdateAction对象为更新操作的具体实现
     void start(UpdateAction updateAction);
 
     /**
      * stop the serverList updater. This call should be idempotent
      */
+    //停止服务更新器
     void stop();
 
     /**
      * @return the last update timestamp as a {@link java.util.Date} string
      */
+    //获取最近的更新时间戳
     String getLastUpdate();
 
     /**
      * @return the number of ms that has elapsed since last update
      */
+    //获取上一次更新到薪资的时间间隔，单位为毫秒
     long getDurationSinceLastUpdateMs();
 
     /**
      * @return the number of update cycles missed, if valid
      */
+    //获取错误的更新周期数
     int getNumberMissedCycles();
 
     /**
      * @return the number of threads used, if vaid
      */
+    //获取核心线程数
     int getCoreThreads();
 }

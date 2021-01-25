@@ -61,8 +61,10 @@ public class ServerStats {
     
     
     long failureCountSlidingWindowInterval = 1000; 
-    
+
+    //失败统计，时间跨度为 1s
     private MeasuredRate serverFailureCounts = new MeasuredRate(failureCountSlidingWindowInterval);
+    //请求数量统计，时间跨度为 300000
     private MeasuredRate requestCountInWindow = new MeasuredRate(300000L);
     
     Server server;
@@ -142,6 +144,7 @@ public class ServerStats {
      * These correspond to the various Monitor methods defined below.
      * No, this is not pretty, but that's the way it is.
      */
+    //百分率
     private static enum Percent {
 
         TEN(10), TWENTY_FIVE(25), FIFTY(50), SEVENTY_FIVE(75), NINETY(90),
@@ -238,9 +241,11 @@ public class ServerStats {
     }
 
     public int getActiveRequestsCount(long currentTime) {
+        //当前向 server服务节点发送请求数量
         int count = activeRequestsCount.get();
         if (count == 0) {
             return 0;
+            //的你给你
         } else if (currentTime - lastActiveRequestsCountChangeTimestamp > activeRequestsCountTimeout.get() * 1000 || count < 0) {
             activeRequestsCount.set(0);
             return 0;            

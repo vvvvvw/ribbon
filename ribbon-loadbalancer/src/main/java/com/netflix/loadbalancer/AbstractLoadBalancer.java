@@ -36,8 +36,11 @@ import java.util.List;
 public abstract class AbstractLoadBalancer implements ILoadBalancer {
     
     public enum ServerGroup{
+        //所有服务实例
         ALL,
+        //正常服务的实例
         STATUS_UP,
+        //停止服务的实例
         STATUS_NOT_UP        
     }
         
@@ -54,10 +57,13 @@ public abstract class AbstractLoadBalancer implements ILoadBalancer {
      * 
      * @param serverGroup Servers grouped by status, e.g., {@link ServerGroup#STATUS_UP}
      */
+    //定义了根据分组类型来获取不同的服务实例的列表
     public abstract List<Server> getServerList(ServerGroup serverGroup);
     
     /**
      * Obtain LoadBalancer related Statistics
      */
+    //定义了获取 LoadBalancerStats 对象的方法，LoadBalancerStats对象被用来存储负载均衡器中各个服务实例
+    //当前的属性和统计信息
     public abstract LoadBalancerStats getLoadBalancerStats();    
 }

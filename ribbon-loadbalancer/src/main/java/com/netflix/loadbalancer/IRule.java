@@ -25,6 +25,7 @@ package com.netflix.loadbalancer;
  * @author stonse
  * 
  */
+//负载均衡的处理规则
 public interface IRule{
     /*
      * choose one alive server from lb.allServers or

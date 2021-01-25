@@ -38,6 +38,7 @@ public interface ILoadBalancer {
 	 * 
 	 * @param newServers new servers to add
 	 */
+	//	 向负载均衡器中维护的实例列表增加服务实例
 	public void addServers(List<Server> newServers);
 	
 	/**
@@ -47,6 +48,7 @@ public interface ILoadBalancer {
 	 *         the load balancer does not use this parameter.
 	 * @return server chosen
 	 */
+	//通过某种策略，从负载均衡器中挑选出一个具体的服务实例
 	public Server chooseServer(Object key);
 	
 	/**
@@ -56,6 +58,7 @@ public interface ILoadBalancer {
 	 * 
 	 * @param server Server to mark as down
 	 */
+	//用来通知和标识负载均衡器中某个实例已经停止服务，不然负载均衡器在下一次获取服务实例清单前都会认为服务实例均是正常服务的
 	public void markServerDown(Server server);
 	
 	/**
@@ -73,10 +76,13 @@ public interface ILoadBalancer {
 	/**
 	 * @return Only the servers that are up and reachable.
      */
+
+	//获取当前正常服务的实例列表
     public List<Server> getReachableServers();
 
     /**
      * @return All known servers, both reachable and unreachable.
      */
+    //获取所有已知的服务实例列表，包括正常服务和停止服务的实例
 	public List<Server> getAllServers();
 }

@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author David Liu
  */
+//定时任务更新
 public class PollingServerListUpdater implements ServerListUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(PollingServerListUpdater.class);

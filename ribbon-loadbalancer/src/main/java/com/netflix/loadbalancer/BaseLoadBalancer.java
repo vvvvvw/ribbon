@@ -66,15 +66,20 @@ public class BaseLoadBalancer extends AbstractLoadBalancer implements
     private static final String DEFAULT_NAME = "default";
     private static final String PREFIX = "LoadBalancer_";
 
+    //负载均衡的处理规则
     protected IRule rule = DEFAULT_RULE;
 
+    //检查服务实例是否正常服务的策略，
     protected IPingStrategy pingStrategy = DEFAULT_PING_STRATEGY;
 
+    //检查服务实例是否正常服务
     protected IPing ping = null;
 
+    //所有服务实例清单
     @Monitor(name = PREFIX + "AllServerList", type = DataSourceType.INFORMATIONAL)
     protected volatile List<Server> allServerList = Collections
             .synchronizedList(new ArrayList<Server>());
+    //正常服务实例清单
     @Monitor(name = PREFIX + "UpServerList", type = DataSourceType.INFORMATIONAL)
     protected volatile List<Server> upServerList = Collections
             .synchronizedList(new ArrayList<Server>());
@@ -91,6 +96,7 @@ public class BaseLoadBalancer extends AbstractLoadBalancer implements
 
     protected AtomicBoolean pingInProgress = new AtomicBoolean(false);
 
+    //存储负载均衡器中各个服务实例当前的属性和统计信息
     protected LoadBalancerStats lbStats;
 
     private volatile Counter counter = Monitors.newCounter("LoadBalancer_ChooseServer");
@@ -272,6 +278,7 @@ public class BaseLoadBalancer extends AbstractLoadBalancer implements
         }
         lbTimer = new ShutdownEnabledTimer("NFLoadBalancer-PingTimer-" + name,
                 true);
+        //ping任务默认10秒一次
         lbTimer.schedule(new PingTask(), 0, pingIntervalSeconds * 1000);
         forceQuickPing();
     }
@@ -430,6 +437,7 @@ public class BaseLoadBalancer extends AbstractLoadBalancer implements
      * uniqueness, so you could give a server a greater share by adding it more
      * than once
      */
+    //将原本维护的服务清单列表和新传入的服务清单列表都加入newList，并通过 setServersList来处理
     @Override
     public void addServers(List<Server> newServers) {
         if (newServers != null && newServers.size() > 0) {
@@ -884,6 +892,7 @@ public class BaseLoadBalancer extends AbstractLoadBalancer implements
      * serially, which may not be desirable, if your <c>IPing</c>
      * implementation is slow, or you have large number of servers.
      */
+    //一个一个调用 IPing的isAlive接口
     private static class SerialPingStrategy implements IPingStrategy {
 
         @Override

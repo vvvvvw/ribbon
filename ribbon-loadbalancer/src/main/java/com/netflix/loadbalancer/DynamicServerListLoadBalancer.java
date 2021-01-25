@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author stonse
  * 
  */
+//1.实现了服务实例清单在运行期的动态更新能力 2.具备了对服务实例清单的过滤功能，可以通过过滤器来选择性地获取一批服务实例清单
 public class DynamicServerListLoadBalancer<T extends Server> extends BaseLoadBalancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DynamicServerListLoadBalancer.class);
 
@@ -55,6 +56,7 @@ public class DynamicServerListLoadBalancer<T extends Server> extends BaseLoadBal
 
     volatile ServerListFilter<T> filter;
 
+    //定时更新服务实例清单
     protected final ServerListUpdater.UpdateAction updateAction = new ServerListUpdater.UpdateAction() {
         @Override
         public void doUpdate() {
